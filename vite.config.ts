@@ -9,6 +9,7 @@ import MotionResolver from 'motion-v/resolver'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/darts-2/',
   plugins: [
     vue(),
     vueDevTools(),

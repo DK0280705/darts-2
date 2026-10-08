@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-wood-950: #1a1209;
+  --color-wood-900: #241a0f;
+  --color-wood-800: #3a2817;
+  --color-wood-700: #4f3620;
+  --color-wood-600: #6b492c;
+  --color-wood-500: #8a5e3a;
+  --color-wood-400: #ab7c52;
+  --color-gold-400: #f4c550;
+  --color-gold-300: #ffd873;
+  --color-silver-300: #d7dce1;
+  --color-bronze-300: #d79b6b;
+  --color-felt-700: #0f3d2e;
+  --color-felt-600: #175a44;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  @apply bg-wood-950 text-stone-100;
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-image:
+    radial-gradient(ellipse at top, rgba(138, 94, 58, 0.15), transparent 60%),
+    repeating-linear-gradient(
+      100deg,
+      rgba(0, 0, 0, 0.08) 0px,
+      rgba(0, 0, 0, 0.08) 2px,
+      transparent 2px,
+      transparent 60px
+    );
+}
+
+/* Hides the cursor in presentation mode so the projected screen stays clean. */
+.cursor-none,
+.cursor-none * {
+  cursor: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-wood-600);
+  border-radius: 999px;
+}
+
+.row-move,
+.row-enter-active,
+.row-leave-active {
+  transition:
+    transform 0.6s ease,
+    opacity 0.4s ease;
+}
+
+.row-enter-from,
+.row-leave-to {
+  opacity: 0;
+}
+
+.row-leave-active {
+  position: absolute;
+}

@@ -23,21 +23,17 @@ body,
 }
 
 body {
-  @apply bg-wood-950 text-stone-100;
   font-family:
     'Segoe UI',
     system-ui,
     -apple-system,
     sans-serif;
   background-image:
-    radial-gradient(ellipse at top, rgba(138, 94, 58, 0.15), transparent 60%),
-    repeating-linear-gradient(
-      100deg,
-      rgba(0, 0, 0, 0.08) 0px,
-      rgba(0, 0, 0, 0.08) 2px,
-      transparent 2px,
-      transparent 60px
-    );
+    linear-gradient(rgba(26, 18, 9, 0.75), rgba(26, 18, 9, 0.75)), url('images/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* Hides the cursor in presentation mode so the projected screen stays clean. */
@@ -46,17 +42,40 @@ body {
   cursor: none !important;
 }
 
+/* Apple HIG overlay scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
+  margin: 10px 0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--color-wood-600);
-  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(255, 255, 255, 0.55);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .row-move,

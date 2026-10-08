@@ -22,6 +22,11 @@ function saveRounds() {
   roundsDraft.value = settingsStore.roundsPerPlayer
 }
 
+function stepRounds(delta: number) {
+  const current = Number(roundsDraft.value) || 1
+  roundsDraft.value = Math.min(20, Math.max(1, current + delta))
+}
+
 function download(filename: string, content: string, mime: string) {
   const blob = new Blob([content], { type: mime })
   const url = URL.createObjectURL(blob)
@@ -120,99 +125,213 @@ function confirmReset() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-2xl px-4 py-6 sm:px-6">
-    <h1 class="mb-6 text-3xl font-black text-gold-300">⚙ Settings</h1>
+  <div class="min-h-screen py-8 sm:py-12">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6">
+      <!-- Navigation / Header -->
+      <header class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <RouterLink
+            to="/"
+            class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-stone-300 hover:bg-white/[0.12] hover:text-white active:scale-95 transition-all shadow-sm"
+            aria-label="Back to leaderboard"
+            title="Back to leaderboard"
+          >
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="10 3 5 8 10 13" />
+            </svg>
+          </RouterLink>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-stone-100">Settings</h1>
+        </div>
+      </header>
 
-    <section class="mb-6 rounded-xl border border-wood-700 bg-wood-900/60 p-4">
-      <h2 class="mb-3 text-sm font-semibold tracking-wide text-stone-400 uppercase">Competition</h2>
-
-      <label class="mb-1 block text-sm text-stone-400">Competition title</label>
-      <div class="mb-4 flex gap-2">
-        <input
-          v-model="titleDraft"
-          type="text"
-          class="min-w-0 flex-1 rounded-lg border border-wood-600 bg-wood-800 px-3 py-2 text-stone-100 focus:border-gold-400 focus:outline-none"
-          @keyup.enter="saveTitle"
-        />
-        <button
-          type="button"
-          class="rounded-lg bg-gold-400 px-4 py-2 font-bold text-wood-950 hover:bg-gold-300"
-          @click="saveTitle"
+      <div class="flex flex-col gap-6">
+        <!-- Section: Competition -->
+        <section
+          class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.25)]"
         >
-          Save
-        </button>
+          <h2
+            class="mb-4 text-xs font-semibold tracking-wider text-stone-400 uppercase select-none"
+          >
+            Competition
+          </h2>
+
+          <div class="space-y-4">
+            <div>
+              <label class="mb-1.5 block text-xs font-medium text-stone-300"
+                >Competition title</label
+              >
+              <div class="flex gap-2">
+                <input
+                  v-model="titleDraft"
+                  type="text"
+                  class="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/[0.05] px-3.5 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400/80 focus:ring-2 focus:ring-amber-400/20 transition-all"
+                  @keyup.enter="saveTitle"
+                />
+                <button
+                  type="button"
+                  class="rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-300 active:scale-95 transition-all shadow-sm"
+                  @click="saveTitle"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="mb-1.5 block text-xs font-medium text-stone-300"
+                >Rounds per player</label
+              >
+              <div class="flex items-center gap-2">
+                <!-- Apple HIG Stepper input -->
+                <div
+                  class="flex items-center rounded-xl border border-white/10 bg-white/[0.05] shadow-inner focus-within:border-amber-400/80 focus-within:ring-2 focus-within:ring-amber-400/20 transition-all"
+                >
+                  <input
+                    v-model.number="roundsDraft"
+                    type="number"
+                    min="1"
+                    max="20"
+                    class="w-16 px-3.5 py-2 text-sm font-semibold tabular-nums text-stone-100 bg-transparent focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    @keyup.enter="saveRounds"
+                  />
+                  <div class="flex flex-col border-l border-white/10 pr-0.5">
+                    <button
+                      type="button"
+                      class="flex h-4 w-6 items-center justify-center rounded-t text-stone-400 hover:bg-white/10 hover:text-white active:scale-95 transition-all disabled:opacity-25 disabled:pointer-events-none"
+                      :disabled="roundsDraft >= 20"
+                      aria-label="Increase rounds"
+                      @click="stepRounds(1)"
+                    >
+                      <svg
+                        class="h-2.5 w-2.5"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="2 7.5 6 3.5 10 7.5" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="flex h-4 w-6 items-center justify-center rounded-b text-stone-400 hover:bg-white/10 hover:text-white active:scale-95 transition-all disabled:opacity-25 disabled:pointer-events-none"
+                      :disabled="roundsDraft <= 1"
+                      aria-label="Decrease rounds"
+                      @click="stepRounds(-1)"
+                    >
+                      <svg
+                        class="h-2.5 w-2.5"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="2 4.5 6 8.5 10 4.5" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-300 active:scale-95 transition-all shadow-sm"
+                  @click="saveRounds"
+                >
+                  Save
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-stone-500">
+                Lowering this does not delete already-recorded rounds; it only changes when entry is
+                blocked.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section: Data Management -->
+        <section
+          class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.25)]"
+        >
+          <h2
+            class="mb-4 text-xs font-semibold tracking-wider text-stone-400 uppercase select-none"
+          >
+            Data
+          </h2>
+          <div class="flex flex-wrap gap-2.5">
+            <button
+              type="button"
+              class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs sm:text-sm font-semibold text-stone-200 hover:bg-white/[0.12] hover:text-white active:scale-95 transition-all shadow-sm"
+              @click="exportJson"
+            >
+              Export JSON
+            </button>
+            <button
+              type="button"
+              class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs sm:text-sm font-semibold text-stone-200 hover:bg-white/[0.12] hover:text-white active:scale-95 transition-all shadow-sm"
+              @click="exportCsv"
+            >
+              Export Leaderboard CSV
+            </button>
+            <button
+              type="button"
+              class="rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs sm:text-sm font-semibold text-stone-200 hover:bg-white/[0.12] hover:text-white active:scale-95 transition-all shadow-sm"
+              @click="triggerImport"
+            >
+              Import JSON
+            </button>
+            <input
+              ref="fileInput"
+              type="file"
+              accept="application/json"
+              class="hidden"
+              @change="onFileSelected"
+            />
+          </div>
+          <p
+            v-if="importError"
+            class="mt-3 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs text-red-300"
+          >
+            {{ importError }}
+          </p>
+          <p
+            v-if="importSuccess"
+            class="mt-3 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-300"
+          >
+            {{ importSuccess }}
+          </p>
+        </section>
+
+        <!-- Section: Danger Zone -->
+        <section
+          class="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-5 sm:p-6 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.25)]"
+        >
+          <h2 class="mb-2 text-xs font-semibold tracking-wider text-red-400 uppercase select-none">
+            Danger Zone
+          </h2>
+          <p class="mb-4 text-xs text-stone-400">
+            Permanently clear all saved tournament state, player rosters, and historical rounds.
+          </p>
+          <button
+            type="button"
+            class="rounded-xl border border-red-500/30 bg-red-500/15 px-4 py-2 text-xs sm:text-sm font-semibold text-red-200 hover:bg-red-500/25 hover:text-red-100 active:scale-95 transition-all shadow-sm"
+            @click="showResetConfirm = true"
+          >
+            Reset all data
+          </button>
+        </section>
       </div>
-
-      <label class="mb-1 block text-sm text-stone-400">Rounds per player</label>
-      <div class="flex gap-2">
-        <input
-          v-model.number="roundsDraft"
-          type="number"
-          min="1"
-          max="20"
-          class="w-28 rounded-lg border border-wood-600 bg-wood-800 px-3 py-2 text-stone-100 focus:border-gold-400 focus:outline-none"
-          @keyup.enter="saveRounds"
-        />
-        <button
-          type="button"
-          class="rounded-lg bg-gold-400 px-4 py-2 font-bold text-wood-950 hover:bg-gold-300"
-          @click="saveRounds"
-        >
-          Save
-        </button>
-      </div>
-      <p class="mt-2 text-xs text-stone-500">
-        Lowering this does not delete already-recorded rounds; it only changes when entry is
-        blocked.
-      </p>
-    </section>
-
-    <section class="mb-6 rounded-xl border border-wood-700 bg-wood-900/60 p-4">
-      <h2 class="mb-3 text-sm font-semibold tracking-wide text-stone-400 uppercase">Data</h2>
-      <div class="flex flex-wrap gap-2">
-        <button
-          type="button"
-          class="rounded-lg bg-wood-700 px-4 py-2 font-semibold text-stone-100 hover:bg-wood-600"
-          @click="exportJson"
-        >
-          Export JSON
-        </button>
-        <button
-          type="button"
-          class="rounded-lg bg-wood-700 px-4 py-2 font-semibold text-stone-100 hover:bg-wood-600"
-          @click="exportCsv"
-        >
-          Export leaderboard CSV
-        </button>
-        <button
-          type="button"
-          class="rounded-lg bg-wood-700 px-4 py-2 font-semibold text-stone-100 hover:bg-wood-600"
-          @click="triggerImport"
-        >
-          Import JSON
-        </button>
-        <input
-          ref="fileInput"
-          type="file"
-          accept="application/json"
-          class="hidden"
-          @change="onFileSelected"
-        />
-      </div>
-      <p v-if="importError" class="mt-2 text-sm text-red-300">{{ importError }}</p>
-      <p v-if="importSuccess" class="mt-2 text-sm text-green-300">{{ importSuccess }}</p>
-    </section>
-
-    <section class="rounded-xl border border-red-900/60 bg-red-950/20 p-4">
-      <h2 class="mb-3 text-sm font-semibold tracking-wide text-red-300 uppercase">Danger zone</h2>
-      <button
-        type="button"
-        class="rounded-lg border border-red-800 px-4 py-2 font-semibold text-red-300 hover:bg-red-950/50"
-        @click="showResetConfirm = true"
-      >
-        Reset all data
-      </button>
-    </section>
+    </div>
 
     <ConfirmDialog
       :open="showResetConfirm"

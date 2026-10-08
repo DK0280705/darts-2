@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { motion } from 'motion-v'
 import type { Dart } from '@/types'
 
 const props = withDefaults(
@@ -56,15 +57,21 @@ function throwMiss() {
         v-for="m in [1, 2, 3] as const"
         :key="m"
         type="button"
-        class="flex-1 rounded-lg py-2 text-sm sm:text-base font-bold transition-all duration-150"
+        class="relative flex-1 rounded-lg py-2 text-sm sm:text-base font-bold transition-colors duration-150 select-none"
         :class="
           modifier === m
-            ? 'bg-amber-400 text-stone-950 shadow-sm ring-1 ring-amber-300/40'
-            : 'text-stone-300 hover:text-white hover:bg-white/[0.06]'
+            ? 'text-stone-950'
+            : 'text-stone-300 hover:text-white hover:bg-white/[0.04]'
         "
         @click="selectModifier(m)"
       >
-        {{ modifierLabels[m] }}
+        <motion.div
+          v-if="modifier === m"
+          layout-id="active-dart-modifier"
+          :transition="{ type: 'spring', stiffness: 420, damping: 32 }"
+          class="absolute inset-0 rounded-lg bg-amber-400 shadow-sm ring-1 ring-amber-300/40"
+        />
+        <span class="relative z-10">{{ modifierLabels[m] }}</span>
       </button>
     </div>
 

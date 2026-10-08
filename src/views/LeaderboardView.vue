@@ -28,7 +28,7 @@ function selectPlayer(id: string) {
       class="flex min-w-0 flex-1 flex-col overflow-hidden px-6 py-6 transition-[padding] duration-300 sm:px-10 sm:py-8"
     >
       <div
-        class="mx-auto flex w-full flex-1 flex-col overflow-hidden transition-[max-width] duration-300"
+        class="mx-auto flex w-full min-h-0 flex-1 flex-col transition-[max-width] duration-300"
         :class="LEADERBOARD_MAX_WIDTH_CLASS"
       >
         <header class="mb-6 flex shrink-0 items-start justify-between gap-4">
@@ -38,7 +38,7 @@ function selectPlayer(id: string) {
           <div v-if="!isPresentation" class="flex my-auto shrink-0 items-center gap-2">
             <button
               type="button"
-              class="flex h-10 w-10 items-center justify-center rounded-lg border border-wood-700 bg-wood-900/70 text-lg font-semibold text-stone-300 transition-colors hover:border-gold-400/60 hover:bg-wood-800 hover:text-gold-300"
+              class="flex backdrop-blur-xl h-10 w-10 items-center justify-center rounded-lg border border-wood-700 bg-wood-900/70 text-lg font-semibold text-stone-300 transition-colors hover:border-gold-400/60 hover:bg-wood-800 hover:text-gold-300"
               :aria-label="uiStore.panelOpen ? 'Close control panel' : 'Open control panel'"
               :title="uiStore.panelOpen ? 'Close control panel' : 'Open control panel'"
               @click="uiStore.togglePanel()"
@@ -49,7 +49,7 @@ function selectPlayer(id: string) {
               href="#/settings"
               target="_blank"
               rel="noopener"
-              class="flex h-10 w-10 items-center justify-center rounded-lg border border-wood-700 bg-wood-900/70 text-lg font-semibold text-stone-300 transition-colors hover:border-gold-400/60 hover:bg-wood-800 hover:text-gold-300"
+              class="flex backdrop-blur-xl h-10 w-10 items-center justify-center rounded-lg border border-wood-700 bg-wood-900/70 text-lg font-semibold text-stone-300 transition-colors hover:border-gold-400/60 hover:bg-wood-800 hover:text-gold-300"
               aria-label="Settings"
               title="Settings"
             >
@@ -74,7 +74,7 @@ function selectPlayer(id: string) {
           </div>
         </div>
 
-        <div v-else class="min-h-0 flex-1">
+        <div v-else class="min-h-0 flex-1 pb-6">
           <LeaderboardTable
             :players="rankedPlayers"
             :rounds-per-player="settingsStore.roundsPerPlayer"

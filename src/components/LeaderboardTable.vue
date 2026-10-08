@@ -25,13 +25,16 @@ function rowClass(rank: number, isHighlighted: boolean): string {
 
 <template>
   <div
-    class="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-wood-950/60 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]"
+    class="relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.08)]"
   >
-    <div class="min-h-0 flex-1 overflow-y-auto">
+    <div
+      class="pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-wood-950/60 backdrop-blur-xl"
+    />
+    <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
       <table class="w-full border-collapse text-left">
-        <thead class="sticky top-0 z-10 bg-wood-950/90 backdrop-blur-xl border-b border-white/8">
+        <thead class="sticky top-0 z-10 backdrop-blur-xl bg-wood-950/90 border-b border-white/8">
           <tr
-            class="text-xs align-middlesm:text-sm font-semibold tracking-wider text-stone-400 uppercase select-none"
+            class="text-xs sm:text-sm font-semibold tracking-wider text-stone-400 uppercase select-none"
           >
             <th scope="col" class="w-14 sm:w-18 px-3 py-3 text-center sm:px-4">Rank</th>
             <th scope="col" class="px-3 py-3 sm:px-5">Player</th>

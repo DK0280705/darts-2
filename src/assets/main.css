@@ -29,7 +29,7 @@ body {
     -apple-system,
     sans-serif;
   background-image:
-    linear-gradient(rgba(26, 18, 9, 0.75), rgba(26, 18, 9, 0.75)), url('images/background.jpg');
+    linear-gradient(rgba(26, 18, 9, 0.75), rgba(26, 18, 9, 0.75)), url('background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

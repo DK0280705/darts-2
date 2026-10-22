@@ -7,13 +7,15 @@ const playersStore = usePlayersStore()
 
 const newName = ref('')
 const newClass = ref('')
+const isPremium = ref(false)
 const addError = ref<string | null>(null)
 
 function addPlayer() {
-  const result = playersStore.addPlayer(newName.value, newClass.value)
+  const result = playersStore.addPlayer(newName.value, isPremium.value, newClass.value)
   if (result.ok) {
     newName.value = ''
     newClass.value = ''
+    isPremium.value = false
     addError.value = null
   } else {
     addError.value = result.error ?? 'Could not add player.'
@@ -32,12 +34,14 @@ function bulkAdd() {
 const editingId = ref<string | null>(null)
 const editName = ref('')
 const editClass = ref('')
+const editIsPremium = ref(false)
 const editError = ref<string | null>(null)
 
-function startEdit(id: string, name: string, className: string | undefined) {
+function startEdit(id: string, name: string, isPremium: boolean, className: string | undefined) {
   editingId.value = id
   editName.value = name
   editClass.value = className ?? ''
+  editIsPremium.value = isPremium
   editError.value = null
 }
 
@@ -49,6 +53,7 @@ function saveEdit() {
     return
   }
   playersStore.setClassName(editingId.value, editClass.value)
+  playersStore.setPremium(editingId.value, editIsPremium.value)
   editingId.value = null
   editError.value = null
 }
@@ -100,6 +105,42 @@ const filteredPlayers = computed(() => {
           placeholder="Class (opt.)"
           class="w-28 rounded-xl border border-white/10 bg-white/[0.05] px-3.5 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400/80 transition-all"
         />
+        <div
+          class="group relative flex flex-col items-center justify-center cursor-pointer select-none px-1"
+        >
+          <span
+            class="text-[10px] font-semibold tracking-wider uppercase transition-all duration-300"
+            :class="
+              isPremium
+                ? 'text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]'
+                : 'text-stone-400 group-hover:text-stone-300'
+            "
+          >
+            VIP
+          </span>
+          <button
+            type="button"
+            role="switch"
+            :aria-checked="isPremium"
+            class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full p-0.5 transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+            :class="
+              isPremium
+                ? 'bg-gradient-to-r from-amber-400 to-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5),inset_0_1px_1px_rgba(255,255,255,0.4)]'
+                : 'bg-stone-800/80 border border-white/10 shadow-inner'
+            "
+            @click="isPremium = !isPremium"
+          >
+            <span
+              class="pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow-md transition-all duration-300 ease-out"
+              :class="
+                isPremium
+                  ? 'translate-x-4 shadow-[0_1px_3px_rgba(0,0,0,0.3)] ring-1 ring-amber-300/50'
+                  : 'translate-x-0 bg-stone-300'
+              "
+            />
+          </button>
+        </div>
+
         <button
           type="submit"
           class="rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-stone-950 hover:bg-amber-300 active:scale-95 transition-all shadow-sm"
@@ -113,38 +154,6 @@ const filteredPlayers = computed(() => {
       >
         {{ addError }}
       </p>
-
-      <div class="mt-3">
-        <button
-          type="button"
-          class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-400/90 hover:text-amber-300 transition-colors"
-          @click="showBulk = !showBulk"
-        >
-          <span>{{ showBulk ? '▾' : '▸' }}</span>
-          <span>{{ showBulk ? 'Hide bulk add' : 'Bulk add (paste a list)' }}</span>
-        </button>
-
-        <div v-if="showBulk" class="mt-3 flex flex-col gap-2">
-          <textarea
-            v-model="bulkText"
-            rows="4"
-            placeholder="One name per line, e.g.&#10;Ada Lovelace, 10A&#10;Alan Turing"
-            class="w-full rounded-xl border border-white/10 bg-white/[0.05] p-3 text-xs sm:text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-amber-400/80 font-mono transition-all"
-          ></textarea>
-          <div class="flex items-center justify-between gap-2">
-            <button
-              type="button"
-              class="rounded-xl border border-white/10 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-stone-200 hover:bg-white/[0.12] hover:text-white active:scale-95 transition-all"
-              @click="bulkAdd"
-            >
-              Add all
-            </button>
-            <p v-if="bulkResult" class="text-xs text-stone-400">
-              Added {{ bulkResult.added }}, skipped {{ bulkResult.skipped }}
-            </p>
-          </div>
-        </div>
-      </div>
     </section>
 
     <!-- Players List Section -->
@@ -208,6 +217,41 @@ const filteredPlayers = computed(() => {
               class="w-24 rounded-lg border border-white/10 bg-white/[0.08] px-2.5 py-1.5 text-xs sm:text-sm text-stone-100 focus:outline-none focus:border-amber-400/80"
               @keyup.enter="saveEdit"
             />
+            <div
+              class="group relative flex flex-col items-center justify-center cursor-pointer select-none px-1"
+            >
+              <span
+                class="text-[9px] font-semibold tracking-wider uppercase transition-all duration-300"
+                :class="
+                  editIsPremium
+                    ? 'text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.6)]'
+                    : 'text-stone-400 group-hover:text-stone-300'
+                "
+              >
+                VIP
+              </span>
+              <button
+                type="button"
+                role="switch"
+                :aria-checked="editIsPremium"
+                class="relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full p-0.5 transition-all duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                :class="
+                  editIsPremium
+                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]'
+                    : 'bg-stone-800/80 border border-white/10 shadow-inner'
+                "
+                @click="editIsPremium = !editIsPremium"
+              >
+                <span
+                  class="pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow-md transition-all duration-300 ease-out"
+                  :class="
+                    editIsPremium
+                      ? 'translate-x-3 shadow-[0_1px_2px_rgba(0,0,0,0.3)]'
+                      : 'translate-x-0 bg-stone-300'
+                  "
+                />
+              </button>
+            </div>
             <button
               type="button"
               class="rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-semibold text-stone-950 hover:bg-amber-300 active:scale-95 transition-all"
@@ -232,7 +276,14 @@ const filteredPlayers = computed(() => {
               class="flex flex-1 min-w-0 items-center gap-2 text-left focus:outline-none"
               @click="playersStore.selectPlayer(player.id)"
             >
-              <span class="truncate font-semibold text-xs sm:text-sm text-stone-100">
+              <span
+                class="truncate font-semibold text-xs sm:text-sm text-stone-100"
+                :class="
+                  player.isPremium
+                    ? 'premium-player-name bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-100 bg-clip-text text-transparent font-bold drop-shadow-[0_0_12px_rgba(245,158,11,0.55)]'
+                    : 'text-stone-100'
+                "
+              >
                 {{ player.name }}
               </span>
               <span
@@ -241,6 +292,7 @@ const filteredPlayers = computed(() => {
               >
                 {{ player.className }}
               </span>
+
               <span class="shrink-0 text-[11px] tabular-nums text-stone-400">
                 ({{ player.rounds.length }} rounds)
               </span>
@@ -251,9 +303,9 @@ const filteredPlayers = computed(() => {
               <button
                 type="button"
                 class="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs font-medium text-stone-300 hover:bg-white/[0.08] hover:text-white active:scale-95 transition-all"
-                @click="startEdit(player.id, player.name, player.className)"
+                @click="startEdit(player.id, player.name, player.isPremium, player.className)"
               >
-                Rename
+                Edit
               </button>
               <button
                 type="button"

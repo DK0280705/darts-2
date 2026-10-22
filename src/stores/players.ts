@@ -31,7 +31,7 @@ export const usePlayersStore = defineStore('players', {
   },
   actions: {
     /** Adds a single player. Rejects empty or case-insensitively duplicate names. */
-    addPlayer(name: string, className?: string): AddPlayerResult {
+    addPlayer(name: string, isPremium: boolean, className?: string): AddPlayerResult {
       const trimmedName = name.trim()
       if (!trimmedName) return { ok: false, error: 'Name cannot be empty.' }
       const exists = this.players.some((p) => normalize(p.name) === normalize(trimmedName))
@@ -40,6 +40,7 @@ export const usePlayersStore = defineStore('players', {
       const player: Player = {
         id: generateId(),
         name: trimmedName,
+        isPremium,
         className: className?.trim() || undefined,
         rounds: [],
       }
@@ -60,8 +61,8 @@ export const usePlayersStore = defineStore('players', {
       let added = 0
       let skipped = 0
       for (const line of lines) {
-        const [namePart, classPart] = line.split(',').map((s) => s.trim())
-        const result = this.addPlayer(namePart ?? '', classPart)
+        const [namePart, isPremiumPart, classPart] = line.split(',').map((s) => s.trim())
+        const result = this.addPlayer(namePart ?? '', isPremiumPart === 'true', classPart)
         if (result.ok) added++
         else skipped++
       }
@@ -85,6 +86,12 @@ export const usePlayersStore = defineStore('players', {
       const player = this.players.find((p) => p.id === id)
       if (!player) return
       player.className = className.trim() || undefined
+    },
+
+    setPremium(id: string, isPremium: boolean) {
+      const player = this.players.find((p) => p.id === id)
+      if (!player) return
+      player.isPremium = isPremium
     },
 
     deletePlayer(id: string) {
@@ -176,6 +183,7 @@ export const usePlayersStore = defineStore('players', {
             name: p.name,
             className: typeof p.className === 'string' ? p.className : undefined,
             rounds,
+            isPremium: p.isPremium,
           })
         }
       }

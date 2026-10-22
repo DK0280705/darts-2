@@ -21,6 +21,15 @@ function rowClass(rank: number, isHighlighted: boolean): string {
   if (rank === 3) return 'bg-amber-700/[0.03] hover:bg-white/[0.05]'
   return 'hover:bg-white/[0.04]'
 }
+
+function formatTime(timestamp: number): string {
+  if (!timestamp) return '—'
+  return new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    // second: '2-digit', // optional if precision matters
+  }).format(new Date(timestamp))
+}
 </script>
 
 <template>
@@ -40,6 +49,7 @@ function rowClass(rank: number, isHighlighted: boolean): string {
             <th scope="col" class="px-3 py-3 sm:px-5">Player</th>
             <th scope="col" class="px-3 py-3 text-center sm:px-4">Class</th>
             <th scope="col" class="px-3 py-3 text-center sm:px-4">Rounds</th>
+            <th scope="col" class="px-3 py-3 text-center sm:px-4">Time</th>
             <th scope="col" class="px-3 py-3 text-right sm:px-4">Best</th>
             <th scope="col" class="px-4 py-3 text-right sm:px-6">Total</th>
           </tr>
@@ -98,11 +108,25 @@ function rowClass(rank: number, isHighlighted: boolean): string {
 
             <!-- Player column -->
             <td class="px-3 py-2.5 sm:px-5 sm:py-3">
-              <span
-                class="truncate text-base sm:text-lg font-semibold tracking-tight text-stone-100"
-              >
-                {{ player.name }}
-              </span>
+              <div class="flex items-center gap-2 min-w-0">
+                <span
+                  class="truncate text-base sm:text-lg font-semibold tracking-tight"
+                  :class="
+                    player.isPremium
+                      ? 'premium-player-name bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-100 bg-clip-text text-transparent font-bold drop-shadow-[0_0_12px_rgba(245,158,11,0.55)]'
+                      : 'text-stone-100'
+                  "
+                >
+                  {{ player.name }}
+                </span>
+                <span
+                  v-if="player.isPremium"
+                  class="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/40 bg-gradient-to-r from-amber-400/20 to-yellow-400/10 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)] animate-pulse"
+                  title="Premium Member"
+                >
+                  ★ VIP
+                </span>
+              </div>
             </td>
 
             <!-- Class column -->
@@ -141,7 +165,12 @@ function rowClass(rank: number, isHighlighted: boolean): string {
                 </span>
               </div>
             </td>
-
+            <!-- Timestamp column -->
+            <td
+              class="px-3 py-2.5 text-center font-medium tabular-nums text-stone-300 text-sm sm:text-base sm:px-4 sm:py-3"
+            >
+              {{ formatTime(player.timestamp) }}
+            </td>
             <!-- Best round column -->
             <td
               class="px-3 py-2.5 text-right font-medium tabular-nums text-stone-300 text-sm sm:text-base sm:px-4 sm:py-3"

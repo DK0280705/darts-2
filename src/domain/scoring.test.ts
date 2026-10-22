@@ -23,7 +23,13 @@ function round(...darts: Dart[]): Round {
 }
 
 function player(rounds: Round[], overrides: Partial<Player> = {}): Player {
-  return { id: overrides.id ?? 'p1', name: overrides.name ?? 'Player', rounds, ...overrides }
+  return {
+    id: overrides.id ?? 'p1',
+    name: overrides.name ?? 'Player',
+    rounds,
+    isPremium: overrides.isPremium ?? false,
+    ...overrides,
+  }
 }
 
 describe('isValidDart', () => {
@@ -168,10 +174,10 @@ describe('rankPlayers', () => {
 
   it('breaks a total and best-round tie using the count of doubles/triples', () => {
     // Both total 120 with a best round of 60, but Alice hits more doubles/triples overall.
-    const alice = player(
-      [round(dart(20, 3)), round(dart(10, 2), dart(10, 2), dart(10, 2))],
-      { id: 'alice', name: 'Alice' },
-    )
+    const alice = player([round(dart(20, 3)), round(dart(10, 2), dart(10, 2), dart(10, 2))], {
+      id: 'alice',
+      name: 'Alice',
+    })
     const bob = player([round(dart(20, 3)), round(dart(20, 1), dart(20, 1), dart(20, 1))], {
       id: 'bob',
       name: 'Bob',

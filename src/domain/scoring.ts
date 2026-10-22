@@ -132,6 +132,7 @@ export function rankPlayers(players: Player[]): RankedPlayer[] {
       bigHits: entry.bigHits,
       roundsCompleted: entry.roundsCompleted,
       rank,
+      timestamp: Date.now(),
     })
   })
 

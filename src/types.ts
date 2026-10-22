@@ -15,6 +15,7 @@ export interface Round {
 export interface Player {
   id: string
   name: string
+  isPremium: boolean
   className?: string
   rounds: Round[]
 }
@@ -33,6 +34,7 @@ export interface RankedPlayer extends Player {
   /** Count of double/triple hits, used as a tie-breaker. */
   bigHits: number
   rank: number
+  timestamp: number
 }
 
 /** Shape of the JSON blob produced by "Export JSON" / consumed by "Import JSON". */

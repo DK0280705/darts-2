@@ -22,15 +22,6 @@ function addPlayer() {
   }
 }
 
-const bulkText = ref('')
-const bulkResult = ref<{ added: number; skipped: number } | null>(null)
-const showBulk = ref(false)
-
-function bulkAdd() {
-  bulkResult.value = playersStore.bulkAddPlayers(bulkText.value)
-  bulkText.value = ''
-}
-
 const editingId = ref<string | null>(null)
 const editName = ref('')
 const editClass = ref('')

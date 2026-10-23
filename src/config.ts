@@ -5,7 +5,7 @@
 import type { ScoreTier } from './types'
 
 /** Default number of rounds each player throws. */
-export const DEFAULT_ROUNDS_PER_PLAYER = 3
+export const DEFAULT_ROUNDS_PER_PLAYER = 2
 
 /** Number of darts thrown per round. */
 export const DARTS_PER_ROUND = 3
@@ -43,10 +43,15 @@ export const AUTO_SCROLL_INTERVAL_MS = 50
  * rank. Checked highest-first.
  */
 export const SCORE_TIER_THRESHOLDS: { tier: ScoreTier; minScore: number }[] = [
-  { tier: 'S', minScore: 160 },
-  { tier: 'A', minScore: 120 },
-  { tier: 'B', minScore: 80 },
-  { tier: 'C', minScore: 40 },
+  { tier: 'S', minScore: 130 },
+  { tier: 'A', minScore: 100 },
+  { tier: 'B', minScore: 0 },
+]
+
+export const PREMIUM_SCORE_TIER_THRESHOLDS: { tier: ScoreTier; minScore: number }[] = [
+  { tier: 'S', minScore: 100 },
+  { tier: 'A', minScore: 70 },
+  { tier: 'B', minScore: 0 },
 ]
 
 /**

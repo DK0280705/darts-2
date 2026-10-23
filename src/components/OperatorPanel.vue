@@ -8,7 +8,13 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { usePlayersStore } from '@/stores/players'
 import { useSettingsStore } from '@/stores/settings'
 import { useUiStore } from '@/stores/ui'
-import { getScoreTier, hasReachedRoundLimit, roundScore } from '@/domain/scoring'
+import {
+  getScoreTier,
+  hasReachedRoundLimit,
+  isAllRoundsComplete,
+  roundScore,
+  total,
+} from '@/domain/scoring'
 import { triggerCelebration } from '@/composables/useCelebration'
 import type { Dart } from '@/types'
 
@@ -53,15 +59,14 @@ function submit() {
   const player = currentPlayer.value
   if (!player) return
   const wasEditing = isEditing.value
-  const thrownScore = roundScore({ darts: currentDarts.value })
   const result = wasEditing
     ? playersStore.updateRound(player.id, editingRoundIndex.value as number, currentDarts.value)
     : playersStore.submitRound(player.id, currentDarts.value, roundsPerPlayer.value)
   if (result.ok) {
-    // Only celebrate brand-new rounds, not corrections to past ones.
-    if (!wasEditing) {
-      const tier = getScoreTier(thrownScore)
-      if (tier) triggerCelebration({ tier, playerName: player.name, roundScore: thrownScore })
+    if (!wasEditing && isAllRoundsComplete(player, roundsPerPlayer.value)) {
+      const totalScore = total(player)
+      const tier = getScoreTier(totalScore, player.isPremium)
+      triggerCelebration({ tier, playerName: player.name, totalScore: totalScore })
     }
     resetDraft()
   } else {

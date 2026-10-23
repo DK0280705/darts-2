@@ -39,9 +39,7 @@ const banners = computed(() =>
   ].filter((b): b is { id: string; message: string } => b !== null && !dismissed.has(b.id)),
 )
 
-const isPresentation = computed(
-  () => route.name === 'leaderboard' && route.query.present === '1',
-)
+const isPresentation = computed(() => route.name === 'leaderboard' && route.query.present === '1')
 
 // Celebration overlay is global so it can appear over the leaderboard, the
 // operator panel, or both — regardless of which tab triggered it.
@@ -79,7 +77,7 @@ function closeCelebration() {
       v-if="activeCelebration"
       :tier="activeCelebration.tier"
       :player-name="activeCelebration.playerName"
-      :round-score="activeCelebration.roundScore"
+      :total-score="activeCelebration.totalScore"
       @close="closeCelebration"
     />
   </div>

@@ -43,9 +43,10 @@ export const usePlayersStore = defineStore('players', {
         isPremium,
         className: className?.trim() || undefined,
         rounds: [],
+        lastUpdated: Date.now(),
       }
       this.players.push(player)
-      if (this.currentPlayerId === null) this.currentPlayerId = player.id
+      this.currentPlayerId = player.id
       return { ok: true }
     },
 
@@ -134,6 +135,7 @@ export const usePlayersStore = defineStore('players', {
       if (darts.length === 0) return { ok: false, error: 'Enter at least one dart.' }
       if (!darts.every(isValidDart)) return { ok: false, error: 'One or more darts are invalid.' }
       player.rounds.push({ darts: darts.map((d) => ({ ...d })) })
+      player.lastUpdated = Date.now()
       return { ok: true }
     },
 
@@ -145,6 +147,7 @@ export const usePlayersStore = defineStore('players', {
       if (!round) return { ok: false, error: 'Round not found.' }
       if (!darts.every(isValidDart)) return { ok: false, error: 'One or more darts are invalid.' }
       round.darts = darts.map((d) => ({ ...d }))
+      player.lastUpdated = Date.now()
       return { ok: true }
     },
 
@@ -183,7 +186,8 @@ export const usePlayersStore = defineStore('players', {
             name: p.name,
             className: typeof p.className === 'string' ? p.className : undefined,
             rounds,
-            isPremium: p.isPremium,
+            isPremium: typeof p.isPremium === 'boolean' ? p.isPremium : false,
+            lastUpdated: typeof p.lastUpdated === 'number' ? p.lastUpdated : Date.now(),
           })
         }
       }

@@ -169,7 +169,7 @@ function formatTime(timestamp: number): string {
             <td
               class="px-3 py-2.5 text-center font-medium tabular-nums text-stone-300 text-sm sm:text-base sm:px-4 sm:py-3"
             >
-              {{ formatTime(player.timestamp) }}
+              {{ formatTime(player.lastUpdated) }}
             </td>
             <!-- Best round column -->
             <td

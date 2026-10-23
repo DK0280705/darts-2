@@ -2,6 +2,7 @@ import {
   BULL_SEGMENT,
   DARTS_PER_ROUND,
   MISS_SEGMENT,
+  PREMIUM_SCORE_TIER_THRESHOLDS,
   SCORE_TIER_THRESHOLDS,
   VALID_MULTIPLIERS,
 } from '@/config'
@@ -76,13 +77,19 @@ export function isRoundComplete(round: Round): boolean {
   return round.darts.length >= DARTS_PER_ROUND
 }
 
+export function isAllRoundsComplete(player: Pick<Player, 'rounds'>, roundLength: number): boolean {
+  return player.rounds.every(isRoundComplete) && player.rounds.length >= roundLength
+}
+
 /**
  * Looks up the celebration tier (if any) earned by a single round score.
  * Returns `null` when the score doesn't meet even the lowest threshold.
  */
-export function getScoreTier(score: number): ScoreTier | null {
-  const match = SCORE_TIER_THRESHOLDS.find((t) => score >= t.minScore)
-  return match?.tier ?? null
+export function getScoreTier(score: number, isPremium: boolean): ScoreTier {
+  const match = isPremium
+    ? PREMIUM_SCORE_TIER_THRESHOLDS.find((t) => score >= t.minScore)
+    : SCORE_TIER_THRESHOLDS.find((t) => score >= t.minScore)
+  return match?.tier ?? 'C'
 }
 
 interface Standing {
@@ -132,7 +139,6 @@ export function rankPlayers(players: Player[]): RankedPlayer[] {
       bigHits: entry.bigHits,
       roundsCompleted: entry.roundsCompleted,
       rank,
-      timestamp: Date.now(),
     })
   })
 

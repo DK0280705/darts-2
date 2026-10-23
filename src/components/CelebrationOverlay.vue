@@ -6,7 +6,7 @@ import type { ScoreTier } from '@/types'
 const props = defineProps<{
   tier: ScoreTier
   playerName: string
-  roundScore: number
+  totalScore: number
 }>()
 
 const emit = defineEmits<{
@@ -89,19 +89,12 @@ onBeforeUnmount(clearFallbackClose)
           Celebration video.
         </video>
 
-        <div v-else class="rounded-2xl border border-gold-400/50 bg-wood-900/80 px-10 py-12">
-          <p class="text-sm tracking-widest text-stone-500 uppercase">Celebration video coming soon</p>
-          <p class="mt-2 text-xs text-stone-600">
-            Drop a file at <code class="text-stone-400">{{ videoSrc }}</code> to play it here.
-          </p>
-        </div>
-
         <div>
           <p class="text-6xl font-black text-gold-300 drop-shadow sm:text-8xl">
             {{ tierLabels[tier] }}
           </p>
           <p class="mt-2 text-2xl font-bold text-stone-100 sm:text-3xl">{{ playerName }}</p>
-          <p class="text-lg text-stone-400">scored {{ roundScore }} this round!</p>
+          <p class="text-lg text-stone-400">scored {{ totalScore }}!</p>
         </div>
       </div>
     </div>

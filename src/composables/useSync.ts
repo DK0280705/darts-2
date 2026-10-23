@@ -12,7 +12,7 @@ export interface SyncChannel<T> {
 export function useSync<T>(channelName: string): SyncChannel<T> {
   const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(channelName) : null
   let handler: ((data: T) => void) | null = null
-
+  console.log('Initializing sync channel:', channel)
   channel?.addEventListener('message', (event: MessageEvent<T>) => {
     handler?.(event.data)
   })

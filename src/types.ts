@@ -18,6 +18,7 @@ export interface Player {
   isPremium: boolean
   className?: string
   rounds: Round[]
+  lastUpdated: number
 }
 
 /** Competition-wide configuration, persisted alongside player data. */
@@ -34,7 +35,6 @@ export interface RankedPlayer extends Player {
   /** Count of double/triple hits, used as a tie-breaker. */
   bigHits: number
   rank: number
-  timestamp: number
 }
 
 /** Shape of the JSON blob produced by "Export JSON" / consumed by "Import JSON". */

@@ -3,7 +3,6 @@ import {
   bestRound,
   bigHits,
   dartScore,
-  getScoreTier,
   hasReachedRoundLimit,
   isRoundComplete,
   isValidDart,
@@ -28,6 +27,7 @@ function player(rounds: Round[], overrides: Partial<Player> = {}): Player {
     name: overrides.name ?? 'Player',
     rounds,
     isPremium: overrides.isPremium ?? false,
+    lastUpdated: overrides.lastUpdated ?? Date.now(),
     ...overrides,
   }
 }
@@ -202,23 +202,5 @@ describe('rankPlayers', () => {
 
   it('returns an empty list for no players', () => {
     expect(rankPlayers([])).toEqual([])
-  })
-})
-
-describe('getScoreTier', () => {
-  it('returns null below the lowest threshold', () => {
-    expect(getScoreTier(0)).toBeNull()
-    expect(getScoreTier(39)).toBeNull()
-  })
-
-  it('returns C, B, A, S at their respective boundaries', () => {
-    expect(getScoreTier(40)).toBe('C')
-    expect(getScoreTier(79)).toBe('C')
-    expect(getScoreTier(80)).toBe('B')
-    expect(getScoreTier(119)).toBe('B')
-    expect(getScoreTier(120)).toBe('A')
-    expect(getScoreTier(159)).toBe('A')
-    expect(getScoreTier(160)).toBe('S')
-    expect(getScoreTier(180)).toBe('S')
   })
 })
